@@ -1,24 +1,41 @@
-# README
+# Too Many Men API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+[Too Many Men is an iOS, Android and web application for beer league hockey teams](https://github.com/pachun/Too-Many-Men).
 
-Things you may want to cover:
+This repository is a [Ruby on Rails](https://rubyonrails.org) app which serves a JSON API the the front end [React Native Expo](https://expo.dev) applications.
 
-* Ruby version
+### Features
 
-* System dependencies
+[Pivotal Tracker](https://www.pivotaltracker.com/n/projects/2689515)
 
-* Configuration
+### Install
 
-* Database creation
+```
+rails db:create
+rails db:migrate
+bundle install
+```
 
-* Database initialization
+### Run
 
-* How to run the test suite
+[Install](#Install)
 
-* Services (job queues, cache servers, search engines, etc.)
+```
+rails server
+```
 
-* Deployment instructions
+### Test
 
-* ...
+[Install](#Install)
+
+```
+COVERAGE=true rspec
+```
+
+### Coverage Reports
+
+[Test](#Test)
+
+```
+open coverage/index.html
+```

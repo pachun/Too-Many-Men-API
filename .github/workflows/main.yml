@@ -1,0 +1,60 @@
+name: Main
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_DB: github_actions_test_pg_db
+          POSTGRES_USER: github_actions_test_pg_user
+          POSTGRES_PASSWORD: github_actions_test_pg_password
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2.3"
+          bundler-cache: true
+      - name: Install Dependencies
+        run: bundle install
+      - name: Create Database
+        env:
+          RAILS_ENV: test
+          PGHOST: localhost
+          POSTGRES_DB: github_actions_test_pg_db
+          POSTGRES_USER: github_actions_test_pg_user
+          POSTGRES_PASSWORD: github_actions_test_pg_password
+        run: |
+          cp config/database.ci.yml config/database.yml
+          bundle exec rails db:create db:migrate
+      - name: Test
+        env:
+          RAILS_ENV: test
+          PGHOST: localhost
+          POSTGRES_DB: github_actions_test_pg_db
+          POSTGRES_USER: github_actions_test_pg_user
+          POSTGRES_PASSWORD: github_actions_test_pg_password
+          PGPORT: ${{ job.services.postgres.ports[5432] }}
+        run: COVERAGE=true bundle exec rspec
+  heroku-deploy:
+    needs: [test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: akhileshns/heroku-deploy@v3.12.14
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "too-many-men-api"
+          heroku_email: "nick@pachulski.me"
