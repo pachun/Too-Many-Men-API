@@ -12,7 +12,8 @@ class PlayerSerializer
   def serialize
     {
       id: player.id,
-      name: player.name,
+      first_name: player.first_name,
+      last_name: player.last_name,
       jersey_number: player.jersey_number,
       phone_number: player.phone_number,
     }.delete_if{ |k,v| v.nil? }

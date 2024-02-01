@@ -1,15 +1,16 @@
 ActiveAdmin.register Player do
-  permit_params :name, :jersey_number, :phone_number
+  permit_params :first_name, :last_name, :jersey_number, :phone_number
 end
 
 class Player < ApplicationRecord
   def self.ransackable_attributes(auth_object = nil)
     [
-      "created_at",
       "id",
       "id_value",
-      "name",
+      "created_at",
       "updated_at",
+      "first_name",
+      "last_name",
       "jersey_number",
       "phone_number",
     ]
