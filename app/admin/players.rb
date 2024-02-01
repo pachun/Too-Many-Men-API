@@ -15,4 +15,8 @@ class Player < ApplicationRecord
       "phone_number",
     ]
   end
+
+  def display_name
+    "#{first_name} #{last_name}"
+  end
 end
