@@ -2,8 +2,14 @@ require "rails_helper"
 
 describe "GET requests to /players", type: :request do
   it "returns all the players" do
-    kevin = create :player, name: "Kevin Malone", jersey_number: 1
-    angela = create :player, name: "Angela Martin", jersey_number: 2
+    kevin = create :player,
+      name: "Kevin Malone",
+      jersey_number: 1,
+      phone_number: "0123456789"
+    angela = create :player,
+      name: "Angela Martin",
+      jersey_number: 2,
+      phone_number: "9876543210"
 
     get "/players"
 
@@ -13,10 +19,12 @@ describe "GET requests to /players", type: :request do
       "id" => kevin.id,
       "name" => "Kevin Malone",
       "jersey_number" => 1,
+      "phone_number" => "0123456789",
     }, {
       "id" => angela.id,
       "name" => "Angela Martin",
       "jersey_number" => 2,
+      "phone_number" => "9876543210",
     }])
   end
 

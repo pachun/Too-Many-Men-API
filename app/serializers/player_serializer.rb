@@ -14,6 +14,7 @@ class PlayerSerializer
       id: player.id,
       name: player.name,
       jersey_number: player.jersey_number,
+      phone_number: player.phone_number,
     }.delete_if{ |k,v| v.nil? }
   end
 end

@@ -1,5 +1,5 @@
 ActiveAdmin.register Player do
-  permit_params :name, :jersey_number
+  permit_params :name, :jersey_number, :phone_number
 end
 
 class Player < ApplicationRecord
@@ -11,6 +11,7 @@ class Player < ApplicationRecord
       "name",
       "updated_at",
       "jersey_number",
+      "phone_number",
     ]
   end
 end
