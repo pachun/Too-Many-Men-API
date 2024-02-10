@@ -11,8 +11,8 @@
 class ApplicationController < ActionController::Base
   private
 
-  def set_active_admin_display_timezone
-    Time.zone = "Eastern Time (US & Canada)"
+  def set_active_admin_display_timezone_to_eastern_time
+    Time.use_zone("Eastern Time (US & Canada)") { yield }
   end
 end
 # :nocov:

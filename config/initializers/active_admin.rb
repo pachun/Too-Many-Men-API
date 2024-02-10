@@ -5,5 +5,5 @@ ActiveAdmin.setup do |config|
   config.batch_actions = true
   config.filter_attributes = [:encrypted_password, :password, :password_confirmation]
   config.localize_format = :long
-  config.before_action :set_active_admin_display_timezone
+  config.around_action :set_active_admin_display_timezone_to_eastern_time
 end

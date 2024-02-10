@@ -2,49 +2,28 @@ require "rails_helper"
 
 describe "GET requests to /players", type: :request do
   it "returns all the players" do
-    kevin = create :player,
-      first_name: "Kevin",
-      last_name: "Malone",
-      jersey_number: 1,
-      phone_number: "0123456789"
-    angela = create :player,
-      first_name: "Angela",
-      last_name: "Martin",
-      jersey_number: 2,
-      phone_number: "9876543210"
+    player_1_double = double
+    player_2_double = double
+    players_double = [player_1_double, player_2_double]
+    allow(Player).to receive(:all).and_return(players_double)
+
+    serialized_player_1_double = { serialized: "player_1_double" }
+    serialized_player_2_double = { serialized: "player_2_double" }
+    allow(PlayerSerializer).to receive(:serialize)
+      .with(player_1_double)
+      .and_return(serialized_player_1_double)
+    allow(PlayerSerializer).to receive(:serialize)
+      .with(player_2_double)
+      .and_return(serialized_player_2_double)
 
     get "/players"
 
     players = JSON.parse(response.body)
 
     expect(players).to eq([{
-      "id" => kevin.id,
-      "first_name" => "Kevin",
-      "last_name" => "Malone",
-      "jersey_number" => 1,
-      "phone_number" => "0123456789",
+      "serialized" => "player_1_double",
     }, {
-      "id" => angela.id,
-      "first_name" => "Angela",
-      "last_name" => "Martin",
-      "jersey_number" => 2,
-      "phone_number" => "9876543210",
+      "serialized" => "player_2_double",
     }])
-  end
-
-  describe "when the player does not have a number" do
-    it "does not return a jersey number attribute" do
-      kevin = create :player, first_name: "Kevin", last_name: "Malone"
-
-      get "/players"
-
-      players = JSON.parse(response.body)
-
-      expect(players).to eq([{
-        "id" => kevin.id,
-        "first_name" => "Kevin",
-        "last_name" => "Malone",
-      }])
-    end
   end
 end
