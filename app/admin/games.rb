@@ -1,5 +1,5 @@
 ActiveAdmin.register Game do
-  permit_params :played_at, :is_home_team
+  permit_params :played_at, :is_home_team, :rink
 end
 
 class Game < ApplicationRecord
@@ -11,6 +11,7 @@ class Game < ApplicationRecord
       "updated_at",
       "played_at",
       "is_home_team",
+      "rink",
     ]
   end
 end

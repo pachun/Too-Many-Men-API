@@ -14,6 +14,7 @@ class GameSerializer
       id: game.id,
       played_at: game.played_at.iso8601,
       is_home_team: game.is_home_team,
+      rink: game.rink,
     }
   end
 end
