@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_12_230426) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_12_235036) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -47,6 +47,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_12_230426) do
     t.boolean "is_home_team", default: false, null: false
     t.integer "rink"
     t.string "opposing_teams_name"
+    t.integer "goals_for"
+    t.integer "goals_against"
   end
 
   create_table "players", force: :cascade do |t|

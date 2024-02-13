@@ -1,5 +1,10 @@
 ActiveAdmin.register Game do
-  permit_params :played_at, :is_home_team, :rink, :opposing_teams_name
+  permit_params :played_at,
+    :is_home_team,
+    :rink,
+    :opposing_teams_name,
+    :goals_for,
+    :goals_against
 end
 
 class Game < ApplicationRecord
@@ -13,6 +18,8 @@ class Game < ApplicationRecord
       "is_home_team",
       "rink",
       "opposing_teams_name",
+      "goals_for",
+      "goals_against",
     ]
   end
 end
