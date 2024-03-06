@@ -27,3 +27,20 @@ describe "GET requests to /players", type: :request do
     }])
   end
 end
+
+describe "GET requests to /players/[id]", type: :request do
+  it "returns the player who has the given id" do
+    player_id = "1"
+    player_double = double
+    allow(Player).to receive(:find).with(player_id).and_return(player_double)
+    allow(PlayerSerializer).to receive(:serialize)
+      .with(player_double)
+      .and_return({ serialized: "player_double" })
+
+    get "/players/#{player_id}"
+
+    received_player = JSON.parse(response.body)
+
+    expect(received_player).to eq({ "serialized" => "player_double" })
+  end
+end

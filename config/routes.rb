@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resources :players, only: [:index]
+  resources :players, only: [:index, :show]
   resources :games, only: [:index]
 
   get "up" => "rails/health#show", as: :rails_health_check
