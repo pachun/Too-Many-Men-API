@@ -44,3 +44,16 @@ describe "GET requests to /players/[id]", type: :request do
     expect(received_player).to eq({ "serialized" => "player_double" })
   end
 end
+
+describe "GET requests to /players/[id]/send_text_message_confirmation_code", type: :request do
+  it "sends the user a text message confirmation code to confirm their identity" do
+    player = create :player
+
+    allow(DeliverTextMessageConfirmationCode).to receive(:deliver)
+
+    get "/players/#{player.id}/send_text_message_confirmation_code"
+
+    expect(DeliverTextMessageConfirmationCode).to have_received(:deliver)
+      .with(player_id: "#{player.id}")
+  end
+end

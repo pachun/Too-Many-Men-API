@@ -7,6 +7,10 @@ class PlayersController < ApiController
     render json: serialized_player
   end
 
+  def send_text_message_confirmation_code
+    DeliverTextMessageConfirmationCode.deliver(player_id: strong_params[:id])
+  end
+
   private
 
   def players
