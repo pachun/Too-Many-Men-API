@@ -57,3 +57,33 @@ describe "GET requests to /players/[id]/send_text_message_confirmation_code", ty
       .with(player_id: "#{player.id}")
   end
 end
+
+describe "POST requests to /players/[id]/check_text_message_confirmation_code" do
+  describe "with an incorrect ?confirmation_code=VALUE" do
+    it "returns a json response of { status: 'incorrect' }" do
+      player = create :player, confirmation_code: "123456"
+
+      post "/players/#{player.id}/check_text_message_confirmation_code?confirmation_code=000000"
+
+      expect(JSON.parse(response.body)).to eq({ "status" => "incorrect" })
+    end
+  end
+
+  describe "with a correct ?confirmation_code=VALUE" do
+    it "sets the players api token and returns a json response of { status: 'correct', api_token: 'api token' }" do
+      player = create :player, confirmation_code: "123456"
+
+      allow(SecureRandom).to receive(:alphanumeric)
+        .with(32)
+        .and_return("faked_api_token")
+
+      post "/players/#{player.id}/check_text_message_confirmation_code?confirmation_code=123456"
+
+      expect(JSON.parse(response.body)).to eq({
+        "status" => "correct",
+        "api_token" => "faked_api_token",
+      })
+      expect(player.reload.api_token).to eq("faked_api_token")
+    end
+  end
+end

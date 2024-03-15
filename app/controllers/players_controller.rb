@@ -11,7 +11,25 @@ class PlayersController < ApiController
     DeliverTextMessageConfirmationCode.deliver(player_id: strong_params[:id])
   end
 
+  def check_text_message_confirmation_code
+    if correct_text_message_confirmation_code?
+      player.update(api_token: api_token)
+      render json: { "status" => "correct", "api_token" => api_token }
+    else
+      render json: { "status" => "incorrect" }
+    end
+  end
+
   private
+
+  def correct_text_message_confirmation_code?
+    @correct_text_message_confirmation_code ||= \
+      player.confirmation_code === strong_params[:confirmation_code]
+  end
+
+  def api_token
+    @api_token ||= SecureRandom.alphanumeric(32)
+  end
 
   def players
     @players ||= Player.all
@@ -32,6 +50,6 @@ class PlayersController < ApiController
   end
 
   def strong_params
-    params.permit(:id)
+    params.permit(:id, :confirmation_code)
   end
 end
