@@ -20,7 +20,10 @@ class GameSerializer
       goals_against: game.goals_against,
       players: Player.all.map do |player|
         PlayerSerializer.serialize(player)
-      end
+      end,
+      ids_of_players_who_responded_yes_to_attending: [],
+      ids_of_players_who_responded_no_to_attending: [],
+      ids_of_players_who_responded_maybe_to_attending: [],
     }.delete_if{ |k,v| v.nil? }
   end
 end

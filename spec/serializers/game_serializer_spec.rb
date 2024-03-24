@@ -35,6 +35,9 @@ describe GameSerializer do
           PlayerSerializer.serialize(player_1),
           PlayerSerializer.serialize(player_2),
         ],
+        ids_of_players_who_responded_yes_to_attending: [],
+        ids_of_players_who_responded_no_to_attending: [],
+        ids_of_players_who_responded_maybe_to_attending: [],
       })
 
       expect(GameSerializer.serialize(away_game)).to eq({
@@ -49,6 +52,9 @@ describe GameSerializer do
           PlayerSerializer.serialize(player_1),
           PlayerSerializer.serialize(player_2),
         ],
+        ids_of_players_who_responded_yes_to_attending: [],
+        ids_of_players_who_responded_no_to_attending: [],
+        ids_of_players_who_responded_maybe_to_attending: [],
       })
     end
 
