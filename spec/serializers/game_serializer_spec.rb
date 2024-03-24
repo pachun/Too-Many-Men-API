@@ -3,6 +3,9 @@ require "rails_helper"
 describe GameSerializer do
   describe "self.serialize(game)" do
     it "serializes games" do
+      player_1 = create :player
+      player_2 = create :player
+
       now = DateTime.current
       home_game = create :game,
         played_at: now - 2.days,
@@ -28,6 +31,10 @@ describe GameSerializer do
         opposing_teams_name: "Scott's Tots",
         goals_for: 3,
         goals_against: 0,
+        players: [
+          PlayerSerializer.serialize(player_1),
+          PlayerSerializer.serialize(player_2),
+        ],
       })
 
       expect(GameSerializer.serialize(away_game)).to eq({
@@ -38,6 +45,10 @@ describe GameSerializer do
         opposing_teams_name: "The Einsteins",
         goals_for: 1,
         goals_against: 2,
+        players: [
+          PlayerSerializer.serialize(player_1),
+          PlayerSerializer.serialize(player_2),
+        ],
       })
     end
 

@@ -18,6 +18,9 @@ class GameSerializer
       opposing_teams_name: game.opposing_teams_name,
       goals_for: game.goals_for,
       goals_against: game.goals_against,
+      players: Player.all.map do |player|
+        PlayerSerializer.serialize(player)
+      end
     }.delete_if{ |k,v| v.nil? }
   end
 end
