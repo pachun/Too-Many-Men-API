@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_15_234858) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_26_114224) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -51,6 +51,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_15_234858) do
     t.integer "goals_against"
   end
 
+  create_table "player_attendances", force: :cascade do |t|
+    t.bigint "game_id", null: false
+    t.bigint "player_id", null: false
+    t.string "attending"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["game_id"], name: "index_player_attendances_on_game_id"
+    t.index ["player_id"], name: "index_player_attendances_on_player_id"
+  end
+
   create_table "players", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -62,4 +72,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_15_234858) do
     t.string "api_token"
   end
 
+  add_foreign_key "player_attendances", "games"
+  add_foreign_key "player_attendances", "players"
 end
