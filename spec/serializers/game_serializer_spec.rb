@@ -58,6 +58,44 @@ describe GameSerializer do
       })
     end
 
+    describe "when players have rsvp'd" do
+      it "serializes their rsvps" do
+        game = create :game
+
+        player_going_to_game = create :player
+        create :player_attendance,
+          game: game,
+          player: player_going_to_game,
+          attending: "Yes"
+
+        player_not_going_to_game = create :player
+        create :player_attendance,
+          game: game,
+          player: player_not_going_to_game,
+          attending: "No"
+
+        player_maybe_going_to_game = create :player
+        create :player_attendance,
+          game: game,
+          player: player_maybe_going_to_game,
+          attending: "Maybe"
+
+        serialized_game = GameSerializer.serialize(game)
+
+        expect(
+          serialized_game[:ids_of_players_who_responded_yes_to_attending]
+        ).to eq([player_going_to_game.id])
+
+        expect(
+          serialized_game[:ids_of_players_who_responded_no_to_attending]
+        ).to eq([player_not_going_to_game.id])
+
+        expect(
+          serialized_game[:ids_of_players_who_responded_maybe_to_attending]
+        ).to eq([player_maybe_going_to_game.id])
+      end
+    end
+
     describe "when the game is missing optional attributes" do
       it "does not serialize the optional, null-valued attributes" do
         game = create :game,
