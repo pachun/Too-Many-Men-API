@@ -70,7 +70,31 @@ describe "POST requests to /players/[id]/check_text_message_confirmation_code" d
   end
 
   describe "with a correct ?confirmation_code=VALUE" do
-    it "sets the players api token and returns a json response of { status: 'correct', api_token: 'api token' }" do
+    describe "when the player does not have an api token" do
+      it "sets the players api token" do
+        player = create :player, confirmation_code: "123456"
+
+        allow(SecureRandom).to receive(:alphanumeric)
+          .with(32)
+          .and_return("faked_api_token")
+
+        post "/players/#{player.id}/check_text_message_confirmation_code?confirmation_code=123456"
+
+        expect(player.reload.api_token).to eq("faked_api_token")
+      end
+    end
+
+    describe "when the player already has an have an api token" do
+      it "does not change the players api token" do
+        player = create :player, confirmation_code: "123456", api_token: "api token"
+
+        post "/players/#{player.id}/check_text_message_confirmation_code?confirmation_code=123456"
+
+        expect(player.reload.api_token).to eq("api token")
+      end
+    end
+
+    it "returns the players api token" do
       player = create :player, confirmation_code: "123456"
 
       allow(SecureRandom).to receive(:alphanumeric)

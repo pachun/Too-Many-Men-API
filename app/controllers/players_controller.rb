@@ -13,7 +13,7 @@ class PlayersController < ApiController
 
   def check_text_message_confirmation_code
     if correct_text_message_confirmation_code?
-      player.update(api_token: api_token)
+      player.update(api_token: api_token) if player.api_token.blank?
       render json: { "status" => "correct", "api_token" => api_token }
     else
       render json: { "status" => "incorrect" }
