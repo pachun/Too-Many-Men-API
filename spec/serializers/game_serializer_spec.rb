@@ -68,6 +68,10 @@ describe GameSerializer do
           id: game.id,
           played_at: game.played_at.iso8601,
           is_home_team: false,
+          players: [],
+          ids_of_players_who_responded_no_to_attending: [],
+          ids_of_players_who_responded_yes_to_attending: [],
+          ids_of_players_who_responded_maybe_to_attending: [],
         })
       end
     end

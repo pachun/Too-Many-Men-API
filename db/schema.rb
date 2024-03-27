@@ -51,7 +51,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_26_114224) do
     t.integer "goals_against"
   end
 
-  create_table "player_attendances", force: :cascade do |t|
+  create_table "player_attendances", primary_key: ["game_id", "player_id"], force: :cascade do |t|
     t.bigint "game_id", null: false
     t.bigint "player_id", null: false
     t.string "attending"
