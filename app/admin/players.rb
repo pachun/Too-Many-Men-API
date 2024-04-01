@@ -4,16 +4,7 @@ end
 
 class Player < ApplicationRecord
   def self.ransackable_attributes(auth_object = nil)
-    [
-      "id",
-      "id_value",
-      "created_at",
-      "updated_at",
-      "first_name",
-      "last_name",
-      "jersey_number",
-      "phone_number",
-    ]
+    @ransackable_attributes ||= column_names + _ransackers.keys + _ransack_aliases.keys + attribute_aliases.keys
   end
 
   def display_name

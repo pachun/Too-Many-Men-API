@@ -9,17 +9,10 @@ end
 
 class Game < ApplicationRecord
   def self.ransackable_attributes(auth_object = nil)
-    [
-      "id",
-      "id_value",
-      "created_at",
-      "updated_at",
-      "played_at",
-      "is_home_team",
-      "rink",
-      "opposing_teams_name",
-      "goals_for",
-      "goals_against",
-    ]
+    @ransackable_attributes ||= column_names + _ransackers.keys + _ransack_aliases.keys + attribute_aliases.keys
+  end
+
+  def display_name
+    "#{played_at.strftime("%F")} #{opposing_teams_name ? "v #{opposing_teams_name}" : "" }"
   end
 end
