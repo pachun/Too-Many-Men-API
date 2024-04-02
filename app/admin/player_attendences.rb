@@ -10,11 +10,7 @@ ActiveAdmin.register PlayerAttendance do
 end
 
 class PlayerAttendance < ApplicationRecord
-  def self.ransackable_attributes(auth_object = nil)
-    @ransackable_attributes ||= column_names + _ransackers.keys + _ransack_aliases.keys + attribute_aliases.keys
-  end
-
-  def self.ransackable_associations(auth_object = nil)
-    reflect_on_all_associations.map { |a| a.name.to_s } + _ransackers.keys
+  def display_name
+    "#{player.display_name} responded #{attending} to attending #{game.display_name}"
   end
 end
