@@ -6,7 +6,7 @@ class GamesController < ApiController
   private
 
   def games
-    @games ||= Game.all
+    @games ||= Game.all.includes(:player_attendances, :players)
   end
 
   def serialized_games

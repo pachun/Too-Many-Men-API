@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_02_144953) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_02_160607) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -49,6 +49,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_02_144953) do
     t.string "opposing_teams_name"
     t.integer "goals_for"
     t.integer "goals_against"
+    t.bigint "team_id", default: 1, null: false
+    t.index ["team_id"], name: "index_games_on_team_id"
   end
 
   create_table "player_attendances", primary_key: ["game_id", "player_id"], force: :cascade do |t|
@@ -71,6 +73,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_02_144953) do
     t.string "confirmation_code"
     t.string "api_token"
     t.integer "confirmation_code_attempts", default: 0, null: false
+    t.bigint "team_id", default: 1, null: false
+    t.index ["team_id"], name: "index_players_on_team_id"
   end
 
   create_table "teams", force: :cascade do |t|
@@ -79,6 +83,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_02_144953) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "games", "teams"
   add_foreign_key "player_attendances", "games"
   add_foreign_key "player_attendances", "players"
+  add_foreign_key "players", "teams"
 end

@@ -18,7 +18,7 @@ class GameSerializer
       opposing_teams_name: game.opposing_teams_name,
       goals_for: game.goals_for,
       goals_against: game.goals_against,
-      players: Player.all.map do |player|
+      players: game.players.map do |player|
         PlayerSerializer.serialize(player)
       end,
       ids_of_players_who_responded_yes_to_attending: \
@@ -34,7 +34,7 @@ class GameSerializer
 
   def players_who_responded_to_attendance_question
     @players_who_responded_to_attendance_question ||= \
-      PlayerAttendance.where(game_id: game.id)
+      game.player_attendances
   end
 
   def ids_of_players_who_responded_yes_to_attending
