@@ -32,7 +32,10 @@ describe CreateOrUpdatePlayerAttendance do
           attending: "Maybe",
         )
 
-        expect(PlayerAttendance.find([game, player]).attending).to eq("Maybe")
+        expect(PlayerAttendance.find_by(
+          game: game,
+          player: player,
+        ).attending).to eq("Maybe")
       end
     end
   end
