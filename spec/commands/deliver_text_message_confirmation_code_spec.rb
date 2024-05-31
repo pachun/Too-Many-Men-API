@@ -1,50 +1,78 @@
 require "rails_helper"
 
 describe DeliverTextMessageConfirmationCode do
-  describe "self.deliver(player_id:)" do
-    it "saves the player's confirmation code" do
-      player = create :player
-      allow(TwilioService).to receive(:text)
+  describe "self.deliver(phone_number:)" do
+    describe "when a player with the given phone number already exists" do
+      it "assigns the existing player a text message confirmation code" do
+        allow(TwilioService).to receive(:text)
 
-      allow(ConfirmationCodeGenerator).to receive(:generate)
-        .and_return("123456")
+        allow(ConfirmationCodeGenerator).to receive(:generate)
+          .and_return("123456")
 
-      DeliverTextMessageConfirmationCode.deliver(player_id: player.id)
+        player = create :player, phone_number: "0123456789"
 
-      expect(player.reload.confirmation_code).to eq("123456")
+        DeliverTextMessageConfirmationCode.deliver(phone_number: "0123456789")
 
-      allow(ConfirmationCodeGenerator).to receive(:generate)
-        .and_return("654321")
+        expect(player.reload.confirmation_code).to eq("123456")
+      end
 
-      DeliverTextMessageConfirmationCode.deliver(player_id: player.id)
+      it "does not change the players api token" do
+        allow(TwilioService).to receive(:text)
 
-      expect(player.reload.confirmation_code).to eq("654321")
+        allow(ConfirmationCodeGenerator).to receive(:generate)
+          .and_return("123456")
+
+        player = create :player, phone_number: "0123456789"
+
+        expect {
+          DeliverTextMessageConfirmationCode.deliver(phone_number: "0123456789")
+        }.not_to change { player.reload.api_token }
+
+        expect(player.reload.confirmation_code).to eq("123456")
+      end
     end
 
-    it "texts the player their confirmation code" do
+    describe "when a player with the given phone number does not exist" do
+      it "creates a player with the given phone number and new api token" do
+        allow(TwilioService).to receive(:text)
+
+        allow(SecureRandom).to receive(:alphanumeric)
+          .with(32)
+          .and_return('new api token')
+
+        expect {
+          DeliverTextMessageConfirmationCode.deliver(phone_number: "0123456789")
+        }.to change {
+          Player.count
+        }.from(0).to(1)
+
+        created_player = Player.last
+
+        expect(created_player.phone_number).to eq("0123456789")
+        expect(created_player.api_token).to eq("new api token")
+      end
+
+      it "assigns the created player a text message confirmation code" do
+        allow(TwilioService).to receive(:text)
+
+        allow(ConfirmationCodeGenerator).to receive(:generate)
+          .and_return("123456")
+
+        DeliverTextMessageConfirmationCode.deliver(phone_number: "0123456789")
+
+        created_player = Player.last
+
+        expect(created_player.confirmation_code).to eq("123456")
+      end
+    end
+
+    it "sends the player a text message confirmation code" do
       allow(TwilioService).to receive(:text)
-
-      player = create :player, phone_number: "0123456789"
-
-      allow(ConfirmationCodeGenerator).to receive(:generate)
-        .and_return("123456")
-
-      DeliverTextMessageConfirmationCode.deliver(player_id: player.id)
-
-      expect(TwilioService).to have_received(:text).with(
-        message: "Your Wolfpack App confirmation code is 123456",
-        to: "0123456789",
-      )
-
-      player_with_a_different_phone_number = create :player,
-        phone_number: "9876543210"
 
       allow(ConfirmationCodeGenerator).to receive(:generate)
         .and_return("654321")
 
-      DeliverTextMessageConfirmationCode.deliver(
-        player_id: player_with_a_different_phone_number.id,
-      )
+      DeliverTextMessageConfirmationCode.deliver(phone_number: "9876543210")
 
       expect(TwilioService).to have_received(:text).with(
         message: "Your Wolfpack App confirmation code is 654321",

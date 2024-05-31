@@ -32,10 +32,14 @@ describe PlayerSerializer do
 
     describe "when the player does not have a jersey number" do
       it "does not serialize a jersey number attribute" do
-        kevin = create :player, first_name: "Kevin", last_name: "Malone"
+        kevin = create :player,
+          phone_number: "0123456789",
+          first_name: "Kevin",
+          last_name: "Malone"
 
         expect(PlayerSerializer.serialize(kevin)).to eq({
           id: kevin.id,
+          phone_number: "0123456789",
           first_name: "Kevin",
           last_name: "Malone",
         })

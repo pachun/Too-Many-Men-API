@@ -1,60 +1,58 @@
 class CheckTextMessageConfirmationCode
-  MAX_CONFIRMATION_CODE_ATTEMPTS = 5
+  MAX_CONFIRMATION_CODE_ATTEMPTS = 3
 
-  def self.check?(player:, attempted_confirmation_code:)
-    new(player, attempted_confirmation_code).check?
+  def self.check(phone_number:, confirmation_code:)
+    new(phone_number, confirmation_code).check
   end
 
-  attr_reader :player, :attempted_confirmation_code
+  attr_reader :phone_number, :confirmation_code
 
-  def initialize(player, attempted_confirmation_code)
-    @player = player
-    @attempted_confirmation_code = attempted_confirmation_code
+  def initialize(phone_number, confirmation_code)
+    @phone_number = phone_number
+    @confirmation_code = confirmation_code
   end
 
-  def check?
-    if is_correct_confirmation_code?
-      unset_confirmation_code
-      set_api_token
+  def check
+    if confirmation_code.blank? || player.blank?
+      :incorrect
+    elsif correct_confirmation_code?
+      unset_players_confirmation_code
+      :correct
+    elsif maximum_number_of_incorrect_confirmation_code_attempts?
+      unset_players_confirmation_code
+      :incorrect_and_unset
     else
-      update_confirmation_code_and_confirmation_code_attempts
+      increment_players_confirmation_code_attempts
+      :incorrect
     end
-
-    is_correct_confirmation_code?
   end
 
   private
 
-  def is_correct_confirmation_code?
-    @is_correct_confirmation_code ||= \
-      attempted_confirmation_code != "" &&
-      player.confirmation_code == attempted_confirmation_code
+  def player
+    @player ||= Player.find_by(phone_number: phone_number)
   end
 
-  def set_api_token
-    if player.api_token.blank?
-      player.update(api_token: SecureRandom.alphanumeric(32))
-    end
+  def correct_confirmation_code?
+    @correct_confirmation_code ||= player.confirmation_code == confirmation_code
   end
 
-  def unset_confirmation_code
-    player.update(confirmation_code: "")
+  def maximum_number_of_incorrect_confirmation_code_attempts?
+    @maximum_number_of_incorrect_confirmation_code_attempts ||= \
+      player.confirmation_code_attempts + 1 == MAX_CONFIRMATION_CODE_ATTEMPTS
   end
 
-  def update_confirmation_code_and_confirmation_code_attempts
-    if hit_max_confirmation_code_attempts?
-      player.update(
-        confirmation_code: "",
-        confirmation_code_attempts: 0,
-      )
-    else
-      player.update(
-        confirmation_code_attempts: player.confirmation_code_attempts + 1
-      )
-    end
+  def unset_players_confirmation_code(attrs = {})
+    player.update(
+      **attrs,
+      confirmation_code: "",
+      confirmation_code_attempts: 0,
+    )
   end
 
-  def hit_max_confirmation_code_attempts?
-    player.confirmation_code_attempts === MAX_CONFIRMATION_CODE_ATTEMPTS - 2
+  def increment_players_confirmation_code_attempts
+    player.update(
+      confirmation_code_attempts: player.confirmation_code_attempts + 1,
+    )
   end
 end

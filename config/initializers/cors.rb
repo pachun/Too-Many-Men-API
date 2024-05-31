@@ -8,7 +8,7 @@
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
     if Rails.env.development?
-      origins "http://localhost:8081", "https://wolfpackapp.netlify.app"
+      origins "*"
     else
       origins "https://wolfpackapp.netlify.app"
     end

@@ -30,8 +30,11 @@ describe GameSerializer do
     it "serializes games players" do
       team = create :team
 
-      player_1 = create :player, team: team
-      player_2 = create :player, team: team
+      player_1 = create :player, phone_number: "0123456789"
+      player_2 = create :player, phone_number: "9876543210"
+
+      create :team_player, team: team, player: player_1
+      create :team_player, team: team, player: player_2
 
       game = create :game, team: team
 
@@ -46,19 +49,19 @@ describe GameSerializer do
     it "serializes players rsvps" do
       game = create :game
 
-      player_going_to_game = create :player
+      player_going_to_game = create :player, phone_number: "0123456789"
       create :player_attendance,
         game: game,
         player: player_going_to_game,
         attending: "Yes"
 
-      player_not_going_to_game = create :player
+      player_not_going_to_game = create :player, phone_number: "9876543210"
       create :player_attendance,
         game: game,
         player: player_not_going_to_game,
         attending: "No"
 
-      player_maybe_going_to_game = create :player
+      player_maybe_going_to_game = create :player, phone_number: "1111111111"
       create :player_attendance,
         game: game,
         player: player_maybe_going_to_game,

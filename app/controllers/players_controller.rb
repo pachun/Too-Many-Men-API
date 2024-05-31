@@ -1,4 +1,6 @@
 class PlayersController < ApiController
+  before_action :authenticate_player, :authenticate_players_team
+
   def index
     render json: serialized_players
   end
@@ -7,30 +9,18 @@ class PlayersController < ApiController
     render json: serialized_player
   end
 
-  def send_text_message_confirmation_code
-    DeliverTextMessageConfirmationCode.deliver(player_id: strong_params[:id])
-  end
-
-  def check_text_message_confirmation_code
-    if is_correct_text_message_confirmation_code?
-      render json: { "status" => "correct", "api_token" => player.api_token }
-    else
-      render json: { "status" => "incorrect" }
-    end
-  end
-
   private
 
-  def is_correct_text_message_confirmation_code?
-    @is_correct_text_message_confirmation_code ||= \
-      CheckTextMessageConfirmationCode.check?(
-        player: player,
-        attempted_confirmation_code: strong_params[:confirmation_code],
-      )
+  def authenticate_players_team
+    return head :not_found unless current_player.teams.find(team.id).present?
+  end
+
+  def team
+    @team ||= Team.find(strong_params[:team_id])
   end
 
   def players
-    @players ||= Player.all
+    @players ||= team.players
   end
 
   def serialized_players
@@ -48,6 +38,6 @@ class PlayersController < ApiController
   end
 
   def strong_params
-    params.permit(:id, :confirmation_code)
+    params.permit(:id, :team_id)
   end
 end

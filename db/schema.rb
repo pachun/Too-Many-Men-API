@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_02_201144) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_01_090649) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -68,14 +68,21 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_02_201144) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "jersey_number"
-    t.string "phone_number"
-    t.string "first_name", null: false
-    t.string "last_name", null: false
+    t.string "phone_number", null: false
+    t.string "first_name"
+    t.string "last_name"
     t.string "confirmation_code"
-    t.string "api_token"
     t.integer "confirmation_code_attempts", default: 0, null: false
-    t.bigint "team_id", default: 1, null: false
-    t.index ["team_id"], name: "index_players_on_team_id"
+    t.string "api_token", null: false
+  end
+
+  create_table "team_players", force: :cascade do |t|
+    t.bigint "team_id", null: false
+    t.bigint "player_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["player_id"], name: "index_team_players_on_player_id"
+    t.index ["team_id"], name: "index_team_players_on_team_id"
   end
 
   create_table "teams", force: :cascade do |t|
@@ -87,5 +94,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_02_201144) do
   add_foreign_key "games", "teams"
   add_foreign_key "player_attendances", "games"
   add_foreign_key "player_attendances", "players"
-  add_foreign_key "players", "teams"
+  add_foreign_key "team_players", "players"
+  add_foreign_key "team_players", "teams"
 end

@@ -1,12 +1,15 @@
 Rails.application.routes.draw do
-  resources :games, only: [:index] do
-    resources :player_attendance, only: [:create]
+  resources :teams, only: [:index] do
+    resources :players, only: [:index, :show]
+    resources :games, only: [:index] do
+      resources :player_attendance, only: [:create]
+    end
   end
-  resources :players, only: [:index, :show]
-  get '/players/:id/send_text_message_confirmation_code',
-    to: "players#send_text_message_confirmation_code"
-  post '/players/:id/check_text_message_confirmation_code',
-    to: "players#check_text_message_confirmation_code"
+
+  post "/text_message_confirmation_codes/deliver",
+    to: "text_message_confirmation_codes#deliver"
+  post "/text_message_confirmation_codes/check",
+    to: "text_message_confirmation_codes#check"
 
   get "up" => "rails/health#show", as: :rails_health_check
 

@@ -4,7 +4,7 @@ describe CreateOrUpdatePlayerAttendance do
   describe "self.create_or_update(game_id:, player_id: attending:)" do
     it "creates the players attendance response" do
       game = create :game
-      player = create :player
+      player = create :player, phone_number: "0123456789"
 
       CreateOrUpdatePlayerAttendance.create_or_update(
         game_id: game.id,
@@ -22,7 +22,7 @@ describe CreateOrUpdatePlayerAttendance do
     describe "when the player attendance record already exists" do
       it "updates the existing player attendance response" do
         game = create :game
-        player = create :player
+        player = create :player, phone_number: "0123456789"
 
         PlayerAttendance.create(game: game, player: player, attending: "Yes")
 

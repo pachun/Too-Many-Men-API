@@ -1,5 +1,5 @@
 class PlayerAttendanceController < ApiController
-  before_action :authenticate_player
+  before_action :authenticate_player, :authenticate_players_team
 
   def create
     CreateOrUpdatePlayerAttendance.create_or_update(
@@ -12,7 +12,15 @@ class PlayerAttendanceController < ApiController
 
   private
 
+  def team
+    @team ||= Team.find(strong_params[:team_id])
+  end
+
+  def authenticate_players_team
+    return head :not_found unless current_player.teams.find(team.id).present?
+  end
+
   def strong_params
-    params.permit(:game_id, :attending)
+    params.permit(:game_id, :attending, :team_id)
   end
 end

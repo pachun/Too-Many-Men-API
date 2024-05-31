@@ -1,37 +1,35 @@
 class DeliverTextMessageConfirmationCode
-  def self.deliver(player_id:)
-    new(player_id).deliver
+  def self.deliver(phone_number:)
+    new(phone_number).deliver
   end
 
-  attr_reader :player_id
+  attr_reader :phone_number
 
-  def initialize(player_id)
-    @player_id = player_id
+  def initialize(phone_number)
+    @phone_number = phone_number
   end
 
   def deliver
-    set_confirmation_code
-    send_confirmation_code_text_message
+    player.update(confirmation_code: confirmation_code)
+    TwilioService.text(
+      message: "Your Wolfpack App confirmation code is #{confirmation_code}",
+      to: phone_number,
+    )
   end
 
   private
-
-  def set_confirmation_code
-    player.update(confirmation_code: confirmation_code)
-  end
-
-  def send_confirmation_code_text_message
-    TwilioService.text(
-      message: "Your Wolfpack App confirmation code is #{confirmation_code}",
-      to: player.phone_number,
-    )
-  end
 
   def confirmation_code
     @confirmation_code ||= ConfirmationCodeGenerator.generate
   end
 
   def player
-    @player ||= Player.find(player_id)
+    @player ||= Player.find_or_initialize_by(
+      phone_number: phone_number,
+    ).tap do |player|
+      if player.api_token.blank?
+        player.update(api_token: SecureRandom.alphanumeric(32))
+      end
+    end
   end
 end

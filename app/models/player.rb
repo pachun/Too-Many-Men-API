@@ -1,6 +1,7 @@
 class Player < ApplicationRecord
-  belongs_to :team
+  has_many :team_players
+  has_many :teams, through: :team_players
 
-  validates :first_name, presence: true
-  validates :last_name, presence: true
+  validates :phone_number, presence: true, uniqueness: true
+  validates :api_token, presence: true, uniqueness: true
 end
