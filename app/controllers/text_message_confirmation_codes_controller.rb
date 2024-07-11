@@ -1,8 +1,15 @@
 class TextMessageConfirmationCodesController < ApiController
+  DUMMY_PHONE_NUMBER_FOR_IOS_APP_TESTERS_AT_APPLE = "0000000000"
+  DUMMY_CONFIRMATION_CODE_FOR_IOS_APP_TESTERS_AT_APPLE = "000000"
+
   def deliver
-    DeliverTextMessageConfirmationCode.deliver(
-      phone_number: strong_params[:phone_number],
-    )
+    if user_is_an_ios_app_tester_at_Apple?
+      set_dummy_ios_app_tester_account_confirmation_code
+    else
+      DeliverTextMessageConfirmationCode.deliver(
+        phone_number: strong_params[:phone_number],
+      )
+    end
   end
 
   def check
@@ -10,6 +17,20 @@ class TextMessageConfirmationCodesController < ApiController
   end
 
   private
+
+  def user_is_an_ios_app_tester_at_Apple?
+    @user_is_an_ios_app_tester_at_Apple ||= \
+      strong_params[:phone_number] == \
+      DUMMY_PHONE_NUMBER_FOR_IOS_APP_TESTERS_AT_APPLE
+  end
+
+  def set_dummy_ios_app_tester_account_confirmation_code
+    Player.find_by(
+      phone_number: DUMMY_PHONE_NUMBER_FOR_IOS_APP_TESTERS_AT_APPLE,
+    ).update(
+      confirmation_code: DUMMY_CONFIRMATION_CODE_FOR_IOS_APP_TESTERS_AT_APPLE,
+    )
+  end
 
   def check_confirmation_code_response
     if confirmation_code_check_result == :correct
