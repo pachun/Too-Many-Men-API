@@ -7,4 +7,5 @@ describe Player, type: :model do
   it { should validate_uniqueness_of(:phone_number).case_insensitive }
   it { should validate_presence_of(:api_token) }
   it { should validate_uniqueness_of(:api_token) }
+  it { should have_many(:team_players).dependent(:destroy) }
 end
