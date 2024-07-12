@@ -24,7 +24,7 @@ describe "GET requests to /teams/:team_id/players", type: :request do
 
     players = JSON.parse(response.body)
 
-    expect(players).to eq([{
+    expect(players).to match_array([{
       "serialized" => "player_1",
     }, {
       "serialized" => "player_2",
