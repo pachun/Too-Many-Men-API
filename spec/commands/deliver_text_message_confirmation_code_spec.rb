@@ -50,6 +50,8 @@ describe DeliverTextMessageConfirmationCode do
 
         expect(created_player.phone_number).to eq("0123456789")
         expect(created_player.api_token).to eq("new api token")
+        expect(created_player.first_name).to eq("")
+        expect(created_player.last_name).to eq("")
       end
 
       it "assigns the created player a text message confirmation code" do

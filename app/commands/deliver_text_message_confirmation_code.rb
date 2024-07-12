@@ -28,7 +28,13 @@ class DeliverTextMessageConfirmationCode
       phone_number: phone_number,
     ).tap do |player|
       if player.api_token.blank?
-        player.update(api_token: SecureRandom.alphanumeric(32))
+        player.api_token = SecureRandom.alphanumeric(32)
+      end
+      if player.first_name.nil?
+        player.first_name = ""
+      end
+      if player.last_name.nil?
+        player.last_name = ""
       end
     end
   end
