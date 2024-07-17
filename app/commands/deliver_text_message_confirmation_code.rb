@@ -11,13 +11,21 @@ class DeliverTextMessageConfirmationCode
 
   def deliver
     player.update(confirmation_code: confirmation_code)
-    TwilioService.text(
-      message: "Your Wolfpack App confirmation code is #{confirmation_code}",
-      to: phone_number,
-    )
+    if Rails.env.development?
+      puts message
+    else
+      TwilioService.text(
+        message: message,
+        to: phone_number,
+      )
+    end
   end
 
   private
+
+  def message
+    @message ||= "Your Too Many Men App confirmation code is #{confirmation_code}"
+  end
 
   def confirmation_code
     @confirmation_code ||= ConfirmationCodeGenerator.generate

@@ -77,7 +77,7 @@ describe DeliverTextMessageConfirmationCode do
       DeliverTextMessageConfirmationCode.deliver(phone_number: "9876543210")
 
       expect(TwilioService).to have_received(:text).with(
-        message: "Your Wolfpack App confirmation code is 654321",
+        message: "Your Too Many Men App confirmation code is 654321",
         to: "9876543210",
       )
     end
