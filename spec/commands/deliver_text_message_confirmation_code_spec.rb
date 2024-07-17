@@ -81,5 +81,35 @@ describe DeliverTextMessageConfirmationCode do
         to: "9876543210",
       )
     end
+
+    describe "in the development environment" do
+      it "does not send a text message" do
+        rails_env_double = instance_double(ActiveSupport::EnvironmentInquirer)
+        allow(rails_env_double).to receive(:development?).and_return(true)
+        allow(Rails).to receive(:env).and_return(rails_env_double)
+        allow(TwilioService).to receive(:text)
+
+        allow(ConfirmationCodeGenerator).to receive(:generate)
+          .and_return("654321")
+
+        DeliverTextMessageConfirmationCode.deliver(phone_number: "9876543210")
+
+        expect(TwilioService).not_to have_received(:text)
+      end
+
+      it "logs the confirmation code" do
+        rails_env_double = instance_double(ActiveSupport::EnvironmentInquirer)
+        allow(rails_env_double).to receive(:development?).and_return(true)
+        allow(Rails).to receive(:env).and_return(rails_env_double)
+        allow(TwilioService).to receive(:text)
+
+        allow(ConfirmationCodeGenerator).to receive(:generate)
+          .and_return("654321")
+
+        expect {
+          DeliverTextMessageConfirmationCode.deliver(phone_number: "9876543210")
+        }.to output("Your Too Many Men App confirmation code is 654321\n").to_stdout
+      end
+    end
   end
 end
