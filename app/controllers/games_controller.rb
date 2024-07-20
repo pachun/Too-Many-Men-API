@@ -5,7 +5,19 @@ class GamesController < ApiController
     render json: serialized_games
   end
 
+  def show
+    render json: serialized_game
+  end
+
   private
+
+  def game
+    @game ||= Game.find(strong_params[:id])
+  end
+
+  def serialized_game
+    @serialized_game ||= GameSerializer.serialize(game)
+  end
 
   def authenticate_players_team
     return head :not_found unless current_player.teams.find(team.id).present?
@@ -26,6 +38,6 @@ class GamesController < ApiController
   end
 
   def strong_params
-    params.permit(:team_id)
+    params.permit(:team_id, :id)
   end
 end
