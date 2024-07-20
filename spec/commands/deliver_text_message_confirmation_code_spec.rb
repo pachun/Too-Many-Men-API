@@ -84,6 +84,7 @@ describe DeliverTextMessageConfirmationCode do
 
     describe "in the development environment" do
       it "does not send a text message" do
+        allow(STDOUT).to receive(:puts)
         rails_env_double = instance_double(ActiveSupport::EnvironmentInquirer)
         allow(rails_env_double).to receive(:development?).and_return(true)
         allow(Rails).to receive(:env).and_return(rails_env_double)
