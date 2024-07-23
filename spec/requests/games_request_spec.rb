@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe "GET requests to /games", type: :request do
+describe "GET requests to /teams/:team_id/games", type: :request do
   it "returns all the games (preloading relations needed by the GameSerializer to avoid N+1 queries)" do
     team = create :team
     player = create :player,
@@ -58,5 +58,24 @@ describe "GET requests to /games", type: :request do
 
       expect(response).to have_http_status(:not_found)
     end
+  end
+end
+
+describe "GET requests to /teams/:team_id/games/:id", type: :request do
+  it "returns the game which has the given id" do
+    team = create :team
+    player = create :player, teams: [team]
+    game = create :game, team: team
+    allow(GameSerializer).to receive(:serialize)
+      .with(game)
+      .and_return({ serialized: "game" })
+
+    get "/teams/#{team.id}/games/#{game.id}", headers: {
+      "ApiToken" => player.api_token,
+    }
+
+    received_player = JSON.parse(response.body)
+
+    expect(received_player).to eq({ "serialized" => "game" })
   end
 end

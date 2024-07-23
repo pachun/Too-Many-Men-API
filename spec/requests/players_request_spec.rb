@@ -58,8 +58,7 @@ end
 describe "GET requests to /teams/:team_id/players/:id", type: :request do
   it "returns the player who has the given id" do
     team = create :team
-    player = create :player,
-      teams: [team]
+    player = create :player, teams: [team]
     allow(PlayerSerializer).to receive(:serialize)
       .with(player)
       .and_return({ serialized: "player" })

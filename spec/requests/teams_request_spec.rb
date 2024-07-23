@@ -53,21 +53,18 @@ describe "GET requests to /teams", type: :request do
   end
 end
 
-describe "GET requests to /teams/:team_id/games/:id", type: :request do
-  it "returns the game which has the given id" do
+describe "GET requests to /teams/:id" do
+  it "returns the team" do
     team = create :team
     player = create :player, teams: [team]
-    game = create :game, team: team
-    allow(GameSerializer).to receive(:serialize)
-      .with(game)
-      .and_return({ serialized: "game" })
+    allow(TeamSerializer).to receive(:serialize)
+      .with(team)
+      .and_return({ serialized: "team" })
 
-    get "/teams/#{team.id}/games/#{game.id}", headers: {
-      "ApiToken" => player.api_token,
-    }
+    get "/teams/#{team.id}", headers: { "ApiToken" => player.api_token }
 
-    received_player = JSON.parse(response.body)
+    received_team = JSON.parse(response.body)
 
-    expect(received_player).to eq({ "serialized" => "game" })
+    expect(received_team).to eq({ "serialized" => "team" })
   end
 end
