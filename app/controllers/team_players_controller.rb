@@ -1,5 +1,5 @@
-class PlayersController < ApiController
-  before_action :authenticate_player, :authenticate_players_team
+class TeamPlayersController < ApiController
+  before_action :authenticate_player
 
   def index
     render json: serialized_players
@@ -11,12 +11,8 @@ class PlayersController < ApiController
 
   private
 
-  def authenticate_players_team
-    return head :not_found unless current_player.teams.find(team.id).present?
-  end
-
   def team
-    @team ||= Team.find(strong_params[:team_id])
+    @team ||= current_player.teams.find(strong_params[:team_id])
   end
 
   def players
@@ -30,7 +26,7 @@ class PlayersController < ApiController
   end
 
   def player
-    @player ||= Player.find(strong_params[:id])
+    @player ||= players.find(strong_params[:id])
   end
 
   def serialized_player

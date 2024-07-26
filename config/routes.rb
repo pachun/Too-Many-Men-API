@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   resources :teams, only: [:index, :show] do
-    resources :players, only: [:index, :show]
+    resources :players, only: [:index, :show], controller: "team_players"
     resources :games, only: [:index, :show] do
       resources :player_attendance, only: [:create]
     end
