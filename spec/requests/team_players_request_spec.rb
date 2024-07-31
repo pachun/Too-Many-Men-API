@@ -72,3 +72,26 @@ describe "GET requests to /teams/:team_id/players/:id", type: :request do
     expect(received_player).to eq({ "serialized" => "player" })
   end
 end
+
+describe "POST requests to /teams/:team_id/players", type: :request do
+  it "invites the new player to the team" do
+    team = create :team
+    player = create :player, teams: [team]
+    allow(InvitePlayerToTeam).to receive(:invite)
+
+    post "/teams/#{team.id}/players", headers: {
+      "ApiToken" => player.api_token,
+    }, params: {
+      "first_name" => "Meredith",
+      "last_name" => "Palmer",
+      "phone_number" => "0123456789",
+    }
+
+    expect(InvitePlayerToTeam).to have_received(:invite).with(
+      team: team,
+      first_name: "Meredith",
+      last_name: "Palmer",
+      phone_number: "0123456789",
+    )
+  end
+end

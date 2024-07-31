@@ -9,7 +9,20 @@ class TeamPlayersController < ApiController
     render json: serialized_player
   end
 
+  def create
+    invite_player_to_team
+  end
+
   private
+
+  def invite_player_to_team
+    InvitePlayerToTeam.invite(
+      team: team,
+      first_name: strong_params[:first_name],
+      last_name: strong_params[:last_name],
+      phone_number: strong_params[:phone_number],
+    )
+  end
 
   def team
     @team ||= current_player.teams.find(strong_params[:team_id])
@@ -34,6 +47,6 @@ class TeamPlayersController < ApiController
   end
 
   def strong_params
-    params.permit(:id, :team_id)
+    params.permit(:id, :team_id, :first_name, :last_name, :phone_number)
   end
 end
