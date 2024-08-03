@@ -10,7 +10,7 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
     if Rails.env.development?
       origins "*"
     else
-      origins "https://wolfpackapp.netlify.app"
+      origins "https://too-many-men.netlify.app"
     end
 
     resource "*",
