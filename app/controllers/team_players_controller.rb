@@ -21,6 +21,7 @@ class TeamPlayersController < ApiController
       first_name: strong_params[:first_name],
       last_name: strong_params[:last_name],
       phone_number: strong_params[:phone_number],
+      inviting_player: current_player,
     )
   end
 

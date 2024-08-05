@@ -92,6 +92,7 @@ describe "POST requests to /teams/:team_id/players", type: :request do
       first_name: "Meredith",
       last_name: "Palmer",
       phone_number: "0123456789",
+      inviting_player: player,
     )
   end
 end
